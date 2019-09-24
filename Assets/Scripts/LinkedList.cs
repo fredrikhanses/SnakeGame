@@ -11,7 +11,7 @@
             next = null;
         }
 
-        public void AddToEnd(data data)
+        public void AddLast(data data)
         {
             if (next == null)
             {
@@ -19,11 +19,11 @@
             }
             else
             {
-                next.AddToEnd(data);
+                next.AddLast(data);
             }
         }
 
-        public void AddToBeginning(data data)
+        public void AddFirst(data data)
         {
             if (next == null)
             {
@@ -110,7 +110,7 @@
             headNode = null;
         }
 
-        public void AddToEnd(data data)
+        public void AddLast(data data)
         {
             if (headNode == null)
             {
@@ -118,11 +118,11 @@
             }
             else
             {
-                headNode.AddToEnd(data);
+                headNode.AddLast(data);
             }
         }
 
-        public void AddToBeginning(data data)
+        public void AddFirst(data data)
         {
             if (headNode == null)
             {
@@ -178,6 +178,18 @@
             else
             {
                 return headNode.Count(count);
+            }
+        }
+
+        public bool Contains()
+        {
+            if ()
+            {
+                return true;
+            }
+            else
+            {
+                return false; 
             }
         }
 

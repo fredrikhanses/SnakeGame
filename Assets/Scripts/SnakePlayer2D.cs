@@ -2,12 +2,13 @@
 
 public class SnakePlayer2D : MonoBehaviour
 {
-    public float speed = 4f;
+    public float speed = 5f;
+    public float maxSpeed = 20f;
+    private bool speedBoost;
     private bool left;
     private bool right;
     private bool up;
     private bool down;
-    private bool clicked;
     private Vector2Int gridMoveDirection;
     private Vector2Int gridPosition;
     public float gridMoveTimer = 1f;
@@ -21,23 +22,25 @@ public class SnakePlayer2D : MonoBehaviour
 
     private void Start()
     {
-        gridPosition = new Vector2Int(0, 0);
-        gridMoveDirection = new Vector2Int(1, 0);
-        snakeMovePositionList = new LinkedList<Vector2Int>.SingleLinkedList();
-        snakeBodyPartTransformList = new LinkedList<Transform>.SingleLinkedList();
-        Spawner.instance.SpawnFruit();
-        GameRules.instance.OnPlayerLifeAdded();
+        gridPosition = new Vector2Int(0, 0);                                        // Set startposition
+        gridMoveDirection = new Vector2Int(1, 0);                                   // Set initial movement direction
+        right = true;                                                               // Initial movement is right
+        snakeMovePositionList = new LinkedList<Vector2Int>.SingleLinkedList();      // 
+        snakeBodyPartTransformList = new LinkedList<Transform>.SingleLinkedList();  // 
+        Spawner.instance.SpawnFruit();                                              // Spawn initial fruit
     }
 
     private void Update()
     {
-        InputHandler();
+        Inputs();
     }
+
     private void FixedUpdate()
     {
-        GridMovementHandler();
-        MovementHandler();
+        GridMovement();
+        DirectionMovement();
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         switch (collision.gameObject.tag)
@@ -47,44 +50,53 @@ public class SnakePlayer2D : MonoBehaviour
                 SnakeAteFruit();
                 break;
             case "Wall":
-                GameRules.instance.playerLife = 1;
-                GameRules.instance.OnPlayerLifeRemoved();
+                GameRules.instance.GameOver();
                 break;
             case "Player":
-                GameRules.instance.playerLife = 1;
-                GameRules.instance.OnPlayerLifeRemoved();
+                GameRules.instance.GameOver();
                 break;
             default:
                 break;
         }
     }
 
-    private void InputHandler()
+    private void Inputs()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow) && !(gridMoveDirection.x == 1 || gridMoveDirection.x == -1) && !clicked)
+        if (Input.GetButtonDown("SpeedBoost"))
+        {
+            SpeedBoost();
+        }
+        if (Input.GetKeyDown(KeyCode.A) && !(left || right))
         {
             left = true;
-            clicked = true;
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow) && !(gridMoveDirection.x == 1 || gridMoveDirection.x == -1) && !clicked)
-        {
-            right = true;
-            clicked = true;
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow) && !(gridMoveDirection.y == 1 || gridMoveDirection.y == -1) && !clicked)
-        {
-            up = true;
-            clicked = true;
-        }
-        if (Input.GetKeyDown(KeyCode.DownArrow) && !(gridMoveDirection.y == 1 || gridMoveDirection.y == -1) && !clicked)
-        {
             right = false;
+            up = false;
+            down = false;
+        }
+        if (Input.GetKeyDown(KeyCode.D) && !(left || right))
+        {
+            left = false;
+            right = true;
+            up = false;
+            down = false;
+        }
+        if (Input.GetKeyDown(KeyCode.W) && !(up || down))
+        {
+            left = false;
+            right = false;
+            up = true;
+            down = false;
+        }
+        if (Input.GetKeyDown(KeyCode.S) && !(up || down))
+        {
+            left = false;
+            right = false;
+            up = false;
             down = true;
-            clicked = true;
         }
     }
 
-    private void MovementHandler()
+    private void DirectionMovement()
     {
         if (left)
         {
@@ -98,7 +110,6 @@ public class SnakePlayer2D : MonoBehaviour
             }
             gridMoveDirection.x = -1;
             gridMoveDirection.y = 0;
-            left = false;
         }
         if (right)
         {
@@ -112,7 +123,6 @@ public class SnakePlayer2D : MonoBehaviour
             }
             gridMoveDirection.x = 1;
             gridMoveDirection.y = 0;
-            right = false;
         }
         if (up)
         {
@@ -126,7 +136,6 @@ public class SnakePlayer2D : MonoBehaviour
             }
             gridMoveDirection.x = 0;
             gridMoveDirection.y = 1;
-            up = false;
         }
         if (down)
         {
@@ -140,51 +149,41 @@ public class SnakePlayer2D : MonoBehaviour
             }
             gridMoveDirection.x = 0;
             gridMoveDirection.y = -1;
-            down = false;
         }
     }
 
-    private void GridMovementHandler()
+    private void GridMovement()
     {
-        Vector2Int oldGridPosition = gridPosition;
-
         gridMoveTimer += Time.deltaTime * speed;
-
         if (gridMoveTimer >= gridMoveTimerMax)
         {
             gridMoveTimer -= gridMoveTimerMax;
-
-            snakeMovePositionList.AddToBeginning(gridPosition);
-
+            snakeMovePositionList.AddFirst(gridPosition);
             gridPosition += gridMoveDirection;
-
-            int snakeMovePositionLength = snakeMovePositionList.Count();
-
-            if (snakeMovePositionLength >= snakeBodySize + 1)
+            
+            if (snakeMovePositionList.Count() > snakeBodySize)
             {
-                snakeMovePositionList.RemoveAtIndex(snakeMovePositionLength - 1);
+                snakeMovePositionList.RemoveLast();
             }
 
             for (int i = 0; i < snakeBodyPartTransformList.Count(); i++)
             {
                 Transform snakeBodyPartTransform = snakeBodyPartTransformList.GetDataAtIndex(i);
-                Vector2Int snakeMovePosition = snakeMovePositionList.GetDataAtIndex(i);
-                Vector3 snakeBodyPosition = new Vector3(snakeMovePosition.x, snakeMovePosition.y);
-                snakeBodyPartTransform.position = snakeBodyPosition;
+                Vector2 snakeMovePosition = snakeMovePositionList.GetDataAtIndex(i);
+                snakeBodyPartTransform.position = snakeMovePosition;
             }
         }
         transform.position = new Vector3(gridPosition.x, gridPosition.y);
-        if (oldGridPosition != gridPosition)
-        {
-            clicked = false;
-        }
     }
-
+    
     private void SnakeAteFruit()
     {
         GameRules.instance.OnFruitAdded();
         snakeBodySize++;
-        speed += 0.5f;
+        if(speed < maxSpeed)
+        {
+            speed += 0.25f;
+        }
         Spawner.instance.SpawnFruit();
         GrowBodyPart();
     }
@@ -192,10 +191,26 @@ public class SnakePlayer2D : MonoBehaviour
     private void GrowBodyPart()
     {
         GameObject snakeBodyPartGameObject = new GameObject("SnakeBodyPart", typeof(SpriteRenderer), typeof(CircleCollider2D));
-        snakeBodyPartGameObject.transform.position = new Vector3(20f, 20f, 0);
-        snakeBodyPartTransformList.AddToEnd(snakeBodyPartGameObject.transform);
+        snakeBodyPartGameObject.transform.position = new Vector2(20f, 20f);
+        snakeBodyPartTransformList.AddLast(snakeBodyPartGameObject.transform);
+        snakeBodyPartGameObject.transform.localScale = new Vector2(1.1f, 1.1f);
+        snakeBodyPartGameObject.GetComponent<CircleCollider2D>().radius = 0.4f;
         snakeBodyPartGameObject.GetComponent<SpriteRenderer>().sprite = snakeBodyPartSprite;
         snakeBodyPartGameObject.GetComponent<SpriteRenderer>().color = Color.green;
         snakeBodyPartGameObject.tag = "Player";
+    }
+
+    private void SpeedBoost()
+    {
+        if(speed < maxSpeed && !speedBoost)
+        {
+            speedBoost = true;
+            speed += 10f;
+        }
+        else if (speedBoost)
+        {
+            speed -= 10f;
+            speedBoost = false;
+        }
     }
 }
