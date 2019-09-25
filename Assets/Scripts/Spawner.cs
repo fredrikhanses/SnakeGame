@@ -23,6 +23,13 @@ public class Spawner : MonoBehaviour
     public void SpawnFruit()
     {
         fruitPosition = new Vector3Int(Random.Range(-gridHeight + 1, gridHeight), Random.Range(-gridWidth + 1, gridWidth), 0);
-        Instantiate(fruit, fruitPosition, Quaternion.identity);
+        if(!SnakePlayer2D.snakeMovePositionList.Contains(new Vector2Int(fruitPosition.x, fruitPosition.y)))
+        {
+            Instantiate(fruit, fruitPosition, Quaternion.identity);
+        }
+        else
+        {
+            SpawnFruit();
+        }
     }
 }

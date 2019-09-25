@@ -1,4 +1,6 @@
-﻿public class LinkedList<data>
+﻿using System;
+
+public class LinkedList<data>
 {
     public class Node
     {
@@ -68,15 +70,11 @@
 
         public void RemoveAtIndex(int count, int index)
         {
-            if (next == null)
-            {
-                return;
-            }
-            else if (count == index)
+            if (count == index)
             {
                 next = next.next;
             }
-            else
+            else if(next.next != null)
             {
                 count++;
                 next.RemoveAtIndex(count, index);
@@ -85,18 +83,34 @@
 
         public data GetDataAtIndex(int count, int index)
         {
-            if (next == null)
+            if (count == index)
             {
                 return next.data;
             }
-            else if (count == index)
-            {
-                return next.data;
-            }
-            else
+            else if(next.next != null)
             {
                 count++;
                 return next.GetDataAtIndex(count, index);
+            }
+            else
+            {
+                return next.data;
+            }
+        }
+
+        internal bool Contains(data data)
+        {
+            if (next.data.Equals(data))
+            {
+                return true;
+            }
+            else if (next.next != null)
+            {
+                return next.Contains(data);
+            }
+            else
+            {
+                return false;
             }
         }
     }
@@ -181,15 +195,23 @@
             }
         }
 
-        public bool Contains()
+        public bool Contains(data data)
         {
-            if ()
+            if (headNode == null)
+            {
+                return false;
+            }
+            else if (headNode.data.Equals(data))
             {
                 return true;
             }
+            else if (headNode.next != null)
+            {
+                return headNode.Contains(data);
+            }
             else
             {
-                return false; 
+                return false;
             }
         }
 
@@ -203,11 +225,14 @@
             {
                 RemoveFirst();
             }
-            else
+            else if(headNode.next != null)
             {
                 int count = 1;
                 headNode.RemoveAtIndex(count, index);
-
+            }
+            else
+            {
+                return;
             }
         }
 
@@ -221,10 +246,14 @@
             {
                 return headNode.data;
             }
-            else
+            else if(headNode.next != null)
             {
                 int count = 1;
                 return headNode.GetDataAtIndex(count, index);
+            }
+            else
+            {
+                return headNode.data;
             }
         }
     }

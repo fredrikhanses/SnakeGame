@@ -16,8 +16,8 @@ public class SnakePlayer2D : MonoBehaviour
     private float rotateLeft = 90f;
     private float rotateRight = -90f;
     private int snakeBodySize = 0;
-    private LinkedList<Vector2Int>.SingleLinkedList snakeMovePositionList;
-    private LinkedList<Transform>.SingleLinkedList snakeBodyPartTransformList;
+    public static LinkedList<Vector2Int>.SingleLinkedList snakeMovePositionList;
+    public static LinkedList<Transform>.SingleLinkedList snakeBodyPartTransformList;
     public Sprite snakeBodyPartSprite;
 
     private void Start()
