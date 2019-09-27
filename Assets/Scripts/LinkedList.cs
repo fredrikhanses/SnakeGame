@@ -1,6 +1,4 @@
-﻿using System;
-
-public class LinkedList<data>
+﻿public class LinkedList<data>
 {
     public class Node
     {
@@ -33,8 +31,10 @@ public class LinkedList<data>
             }
             else
             {
-                Node temp = new Node(data);
-                temp.next = next;
+                Node temp = new Node(data)
+                {
+                    next = next
+                };
                 next = temp;
             }
         }
@@ -144,8 +144,10 @@ public class LinkedList<data>
             }
             else
             {
-                Node temp = new Node(data);
-                temp.next = headNode;
+                Node temp = new Node(data)
+                {
+                    next = headNode
+                };
                 headNode = temp;
             }
         }

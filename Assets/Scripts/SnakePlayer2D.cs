@@ -25,8 +25,8 @@ public class SnakePlayer2D : MonoBehaviour
         gridPosition = new Vector2Int(0, 0);                                        // Set startposition
         gridMoveDirection = new Vector2Int(1, 0);                                   // Set initial movement direction
         right = true;                                                               // Initial movement is right
-        snakeMovePositionList = new LinkedList<Vector2Int>.SingleLinkedList();      // 
-        snakeBodyPartTransformList = new LinkedList<Transform>.SingleLinkedList();  // 
+        snakeMovePositionList = new LinkedList<Vector2Int>.SingleLinkedList();      // List to hold the heads previous movements to be used by the bodyparts.
+        snakeBodyPartTransformList = new LinkedList<Transform>.SingleLinkedList();  // List to hold the transforms of the bodyparts
         Spawner.instance.SpawnFruit();                                              // Spawn initial fruit
     }
 

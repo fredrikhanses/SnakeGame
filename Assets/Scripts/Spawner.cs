@@ -5,7 +5,7 @@ public class Spawner : MonoBehaviour
     public int gridHeight = 17;
     public int gridWidth = 9;
     public static Spawner instance;
-    public GameObject fruit;
+    public GameObject fruit = null;
     private Vector3Int fruitPosition;
 
     private void Awake()
