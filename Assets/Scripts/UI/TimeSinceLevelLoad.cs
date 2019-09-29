@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class TimeSinceLevelLoad : MonoBehaviour
 {
     public Text time = null;
-    private float seconds;
+    public static float seconds;
 
     private void Awake()
     {

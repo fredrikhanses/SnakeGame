@@ -11,10 +11,14 @@ public class GameRulesIntEvent : UnityEvent<int>
 public class GameRules : MonoBehaviour
 {
     public static GameRules instance;
+    public GameRulesIntEvent onFruitsChanged;
+    public GameRulesIntEvent onFruitHighscoreChanged;
+    public GameRulesIntEvent onTimeHighscoreChanged;
     public int winSceneIndex;
     public int loseSceneIndex;
-    private int fruitsInPlay;
-    public GameRulesIntEvent onFruitsChanged;
+    private int fruitHighscore;
+    private int timeHighscore;
+    private int fruitsEaten;
 
     private void Awake()
     {
@@ -28,10 +32,42 @@ public class GameRules : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        fruitHighscore = PlayerPrefs.GetInt("fruitHighscore");
+        timeHighscore = PlayerPrefs.GetInt("timeHighscore");
+        onFruitHighscoreChanged.Invoke(fruitHighscore);
+        onTimeHighscoreChanged.Invoke(timeHighscore);
+    }
+
+    private void OnDestroy()
+    {
+        PlayerPrefs.SetInt("fruitHighscore", fruitHighscore);
+        PlayerPrefs.SetInt("timeHighscore", timeHighscore);
+        PlayerPrefs.Save();
+    }
+
+    public void UpdateFruitHighscore()
+    {
+        onFruitHighscoreChanged.Invoke(fruitHighscore);
+    }
+
+    public void UpdateTimeHighscore()
+    {
+        onTimeHighscoreChanged.Invoke(timeHighscore);
+    }
+
     public void OnFruitAdded()
     {
-        fruitsInPlay++;
-        onFruitsChanged.Invoke(fruitsInPlay);
+        fruitsEaten++;
+        onFruitsChanged.Invoke(fruitsEaten);
+        if(fruitsEaten > fruitHighscore)
+        {
+            fruitHighscore = fruitsEaten;
+            timeHighscore = Mathf.RoundToInt(Time.timeSinceLevelLoad);
+            UpdateFruitHighscore();
+            UpdateTimeHighscore();
+        }
     }
 
     public void GameOver()

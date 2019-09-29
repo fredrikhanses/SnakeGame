@@ -44,8 +44,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a0d0691f3b971a428d1b630e1eab485, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winSceneIndex: 2
-  loseSceneIndex: 1
   onFruitsChanged:
     m_PersistentCalls:
       m_Calls:
@@ -60,6 +58,13 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  onHighscoreChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  winSceneIndex: 2
+  loseSceneIndex: 1
+  fruitHighscore: 0
+  timeHighscore: 0
 --- !u!114 &5200578981635395105
 MonoBehaviour:
   m_ObjectHideFlags: 0

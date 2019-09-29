@@ -3,11 +3,14 @@ using UnityEngine.UI;
 
 public class UISetTextFromInt : MonoBehaviour
 {
-    Text text;
+    public Text text = null;
 
     private void Awake()
     {
-        text = GetComponent<Text>();
+        if (text == null)
+        {
+            text = GetComponent<Text>();
+        }
     }
 
     public void SetTextFromInt(int value)

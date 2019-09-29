@@ -4,6 +4,7 @@ public class SnakePlayer2D : MonoBehaviour
 {
     public float speed = 5f;
     public float maxSpeed = 20f;
+    public bool causeCameraShake = false;
     private bool speedBoost;
     private bool left;
     private bool right;
@@ -43,6 +44,11 @@ public class SnakePlayer2D : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (causeCameraShake)
+        {
+            GameCamera.instance.cameraShake.Shake();
+        }
+
         switch (collision.gameObject.tag)
         {
             case "Fruit":
